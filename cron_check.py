@@ -2,19 +2,19 @@ import os
 import time
 import subprocess
 
-DOGECOIN_EXECUTABLES_LOCATION = ''
-DIGIBYTE_EXECUTABLES_LOCATION = ''
+DOGECOIN_EXECUTABLES_LOCATION = 'nohup /home/javier/dogecoin-1.10.0/bin/dogecoind &'
+DIGIBYTE_EXECUTABLES_LOCATION = 'digibyte-6.16.2/bin/digibyted'
 MAX_RETRY = 5
 
 
 
-daemon_to_exec_files_map = {
+daemon_to_exec_map = {
         'dogecoin': DOGECOIN_EXECUTABLES_LOCATION,
         'digibyte': DIGIBYTE_EXECUTABLES_LOCATION
         }
 
 def start_daemon(deamon_name):
-    cmd = deamon_to_exec_files_map[ deamon_name ]
+    cmd = deamon_to_exec_map[ deamon_name ]
     response = os.system(cmd )
 
 
@@ -46,9 +46,7 @@ if not internet_conn:
 
 output = subprocess.check_output(['ps', '-A'])
 
-
-if 'dogecoin' in output:
-    print("dogecoin is running")
-if 'digibyte' in output:
-    print('digibyte is running')
+for daemon in daemon_to_exec_map:
+    if daemon not in output:
+        print( daemon + " is not running")
 
