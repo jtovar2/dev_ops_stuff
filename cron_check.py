@@ -53,13 +53,15 @@ def update_ip():
     task_key = datastore_client.key(kind, name)
 
     # Prepares the new entity
-    task = datastore.Entity(key=task_key)
-    task['IP'] = json_dict['ip']
+    task = datastore_client.get(task_key)
+    if task['IP'] != json_dict['ip']:
+        task['IP'] = json_dict['ip']
+        # Saves the entity
+        datastore_client.put(task)
+        print('Saved {}: {}'.format(task.key.name, task['IP']))
+    else:
+        print("ip hasn't changed")
 
-    # Saves the entity
-    datastore_client.put(task)
-
-    print('Saved {}: {}'.format(task.key.name, task['IP']))
 
 internet_conn = check_ping()
 if not internet_conn:
