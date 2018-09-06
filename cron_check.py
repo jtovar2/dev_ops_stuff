@@ -8,13 +8,15 @@ import json
 LCP = os.environ['LCP']
 DOGECOIN_EXECUTABLES_LOCATION = '/home/javier/dogecoin-1.10.0/bin/dogecoind'
 DIGIBYTE_EXECUTABLES_LOCATION = '/home/javier/digibyte-6.16.2/bin/digibyted'
+WALLET_MANAGER_EXECUTABLE = 'gunicorn --chdir=/home/javier/git/wallet_manager --workers=3  --bind 0.0.0.0:5000 wsgi'
 MAX_RETRY = 5
 
 datastore_client = datastore.Client()
 
 daemon_to_exec_map = {
         'dogecoin': DOGECOIN_EXECUTABLES_LOCATION,
-        'digibyte': DIGIBYTE_EXECUTABLES_LOCATION
+        'digibyte': DIGIBYTE_EXECUTABLES_LOCATION,
+        'gunicorn': WALLET_MANAGER_EXECUTABLE
         }
 
 def start_daemon(daemon_cmd):
