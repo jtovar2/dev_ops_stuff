@@ -15,7 +15,7 @@ datastore_client = datastore.Client()
 
 daemon_to_exec_map = {
         'dogecoin': DOGECOIN_EXECUTABLES_LOCATION,
-        'digibyte': DIGIBYTE_EXECUTABLES_LOCATION,
+#        'digibyte': DIGIBYTE_EXECUTABLES_LOCATION,
         'gunicorn': WALLET_MANAGER_EXECUTABLE
         }
 
