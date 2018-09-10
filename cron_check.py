@@ -8,7 +8,7 @@ import json
 LCP = os.environ['LCP']
 DOGECOIN_EXECUTABLES_LOCATION = '/home/javier/dogecoin-1.10.0/bin/dogecoind'
 DIGIBYTE_EXECUTABLES_LOCATION = '/home/javier/digibyte-6.16.2/bin/digibyted'
-WALLET_MANAGER_EXECUTABLE = 'gunicorn --chdir=/home/javier/git/wallet_manager --workers=2  --bind 0.0.0.0:5000 wsgi:application'
+WALLET_MANAGER_EXECUTABLE = 'gunicorn --chdir=/home/javier/git/wallet_manager --workers=1  --bind 0.0.0.0:5000 wsgi:application'
 MAX_RETRY = 5
 
 datastore_client = datastore.Client()
