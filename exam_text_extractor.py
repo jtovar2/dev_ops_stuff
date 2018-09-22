@@ -3,10 +3,17 @@ from google.cloud import storage
 from google.cloud import vision
 import os
 import textract
+import requests
 
 lcp = os.environ['LCP']
 lcp = lcp.upper()
 project = os.environ['PROJECT_ID']
+
+#app_hostname = os.environ['APP_HOSTNAME']
+app_hostname = "{lcp}-exambae-"
+app_hostname = app_hostname.format(lcp=lcp)
+
+insert_document_endpoint = 'http://{app_hostname}/document/insert'.format(app_hostname=app_hostname)
 
 storage_client = storage.Client()
 vision_client = vision.ImageAnnotatorClient()
@@ -24,6 +31,9 @@ results = exam_dm.run_query(query)
 
 print results
 
+
+jsont_dicts = []
+
 for result in results:
 	blob_info = result['file'].split('/o/')
 	bucket_name = blob_info[0]
@@ -34,16 +44,47 @@ for result in results:
 	with open(blob_name, 'wb') as file_obj:
 		blob.download_to_file(file_obj)
 
+	local_text = None
 	try:
 		text = textract.process(blob_name)
 		print("local**********************")
 		print(text)
+		local_text = text
 		print("local*******************")
 	except:
 		print("textract fucked up")
 
-	'''gcp_response = vision_client.document_text_detection({'source': {'image_uri': 'gs://{bucket_name}/{blob_name}'.format(bucket_name=bucket_name, blob_name=blob_name)}})
+	gcp_response = vision_client.document_text_detection({'source': {'image_uri': 'gs://{bucket_name}/{blob_name}'.format(bucket_name=bucket_name, blob_name=blob_name)}})
 
 	print("GCP****************")
 	print(gcp_response.full_text_annotation.text)
-	print("GCP****************")'''
+	print("GCP****************")
+
+
+	if (gcp_response.full_text_annotation.text is not None and gcp_response.full_text_annotation.text != "") or ( local_text is not None and local_text != ""):
+
+		gcp_text = gcp_response.full_text_annotation.text
+		json_dict = {}
+		json_dict['school'] = result['school']
+		json_dict['description'] = result['description']
+		json_dict['school_class'] = result['school_class']
+		json_dict['local_text'] = local_text
+		json_dict['gcp_text'] = gcp_text
+		json_dict['id'] = str(result.key.id_oresult
+
+		jsont_dicts.append(json_dict)
+
+	
+
+#response = requests.post(insert_document_endpoint, data=json.dumps(json_dict) )
+print("the dictionary ")
+print("the dictionary ")
+print("the dictionary ")
+print(jsont_dicts)
+
+json_dict  = {}
+json_dict['entities'] = json_dicts
+
+
+
+
