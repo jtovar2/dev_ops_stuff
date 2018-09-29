@@ -1,6 +1,7 @@
 import datastore_manager
 from google.cloud import storage
 from google.cloud import vision
+from google.cloud import vision_v1p3beta1 as handwriting_vision
 import os
 import textract
 import requests
@@ -17,8 +18,10 @@ insert_document_endpoint = 'http://{app_hostname}/document/insert'.format(app_ho
 
 storage_client = storage.Client()
 vision_client = vision.ImageAnnotatorClient()
+handwriting_client = handwriting_vision.ImageAnnotatorClient()
 
-
+handwriting_image = handwriting_vision.types.Image()
+handwriting_imagesource.image_uri = uri
 
 exams_to_be_processed_kind = 'exams_to_be_processed_{LCP}'.format(LCP=lcp)
 
@@ -55,22 +58,36 @@ for result in results:
 		print("textract fucked up")
 
 	gcp_response = vision_client.document_text_detection({'source': {'image_uri': 'gs://{bucket_name}/{blob_name}'.format(bucket_name=bucket_name, blob_name=blob_name)}})
-
+	handwriting_image = handwriting_vision.types.Image()
+	handwriting_image.source.image_uri = blob.media_link()
+	
+	handWriting_image_context = handwriting_vision.types.ImageContext(
+        language_hints=['en-t-i0-handwrit'])
+	
+	
+	
+	handwriting_response = handwriting_client.document_text_detection(image=handwriting_image,
+                                              image_context=handWriting_image_context)
+	
 	print("GCP****************")
 	print(gcp_response.full_text_annotation.text)
 	print("GCP****************")
 
 
-	if (gcp_response.full_text_annotation.text is not None and gcp_response.full_text_annotation.text != "") or ( local_text is not None and local_text != ""):
+	if (gcp_response.full_text_annotation.text is not None and gcp_response.full_text_annotation.text != "") or ( local_text is not None and local_text != "")
+	or ( handwriting_response is not None and handwriting_response != ""):
 
 		gcp_text = gcp_response.full_text_annotation.text
+		
+		handwriting_text = handwriting_response.full_text_annotation.text
 		json_dict = {}
 		json_dict['school'] = result['school']
 		json_dict['description'] = result['description']
 		json_dict['school_class'] = result['school_class']
 		json_dict['local_text'] = local_text
 		json_dict['gcp_text'] = gcp_text
-		json_dict['id'] = str(result.key.id_oresult
+		json_dict['handwriting_text'] = handwriting_text
+		json_dict['id'] = str(result.key.id_oresult)
 
 		jsont_dicts.append(json_dict)
 
