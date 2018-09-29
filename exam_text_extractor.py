@@ -93,15 +93,16 @@ for result in results:
 
 	
 
-#response = requests.post(insert_document_endpoint, data=json.dumps(json_dict) )
 print("the dictionary ")
 print("the dictionary ")
 print("the dictionary ")
 print(jsont_dicts)
 
+
 json_dict  = {}
 json_dict['entities'] = json_dicts
 
+response = requests.post(insert_document_endpoint, data=json.dumps(json_dict) )
 
 
 
