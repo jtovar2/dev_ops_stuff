@@ -8,7 +8,7 @@ import json
 LCP = os.environ['LCP']
 DOGECOIN_EXECUTABLES_LOCATION = '/home/javier/dogecoin-1.10.0/bin/dogecoind --daemon'
 DIGIBYTE_EXECUTABLES_LOCATION = '/home/javier/digibyte-6.16.2/bin/digibyted --daemon'
-WALLET_MANAGER_EXECUTABLE = 'gunicorn --chdir=/home/javier/git/wallet_manager --workers=2  --bind 0.0.0.0:5000 --daemon wsgi:application'
+WALLET_MANAGER_EXECUTABLE = 'gunicorn --workers=2 --bind 0.0.0.0:5000 -D --chdir=/home/javier/git/wallet_manager wsgi:application'
 MAX_RETRY = 5
 
 datastore_client = datastore.Client()
@@ -21,9 +21,11 @@ daemon_to_exec_map = {
 
 def start_daemon(daemon_cmd):
     print("about to start this daemon")
-    subprocess.Popen(['nohup', daemon_cmd],stdout=open('/dev/null', 'w'),
+    '''subprocess.Popen(daemon_cmd,stdout=open('/dev/null', 'w'),
             stderr=open('/home/javier/logfile.log', 'a'),
-            preexec_fn=os.setpgrp)
+            preexec_fn=os.setpgrp)'''
+    subprocess.call(daemon_cmd, shell=True)
+
     print("daemon started")
 
 def check_that_service_is_running(daemon):
