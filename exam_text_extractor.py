@@ -78,10 +78,10 @@ for result in results:
 
 	if (gcp_document_text_response.full_text_annotation.text is not None and gcp_document_text_response.full_text_annotation.text != "") or ( local_text is not None and local_text != "") or ( gcp_handwriting_response is not None and gcp_handwriting_response != "") or ( gcp_text_response is not None and gcp_text_response != ""):
 
-		gcp_document_text = gcp_document_text_response.full_text_annotation.text
+		gcp_document_text = gcp_document_text_response.full_text_annotation.text.encode('ascii', 'ignore')
 		
-		gcp_handwriting_text = gcp_handwriting_response.full_text_annotation.text
-		gcp_text = gcp_handwriting_response.full_text_annotation.text
+		gcp_handwriting_text = gcp_handwriting_response.full_text_annotation.text.encode('ascii', 'ignore')
+		gcp_text = gcp_handwriting_response.full_text_annotation.text.encode('ascii', 'ignore')
 		json_dict = {}
 		json_dict['school'] = result['school']
 		json_dict['description'] = result['description']
